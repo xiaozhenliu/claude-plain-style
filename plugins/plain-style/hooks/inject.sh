@@ -1,12 +1,14 @@
 #!/bin/bash
 # UserPromptSubmit hook: read STYLE.md and hand it to Claude Code as additionalContext.
 # A STYLE.md in the current project root overrides the plugin default.
+# Claude Code sets CLAUDE_PROJECT_DIR; Codex does not, but runs hooks from the session directory.
 
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 STYLE="$PLUGIN_ROOT/STYLE.md"
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$PWD}"
 
-if [ -n "$CLAUDE_PROJECT_DIR" ] && [ -f "$CLAUDE_PROJECT_DIR/STYLE.md" ]; then
-  STYLE="$CLAUDE_PROJECT_DIR/STYLE.md"
+if [ -f "$PROJECT_DIR/STYLE.md" ]; then
+  STYLE="$PROJECT_DIR/STYLE.md"
 fi
 
 [ -f "$STYLE" ] || exit 0

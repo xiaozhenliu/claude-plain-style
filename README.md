@@ -1,6 +1,6 @@
 # claude-plain-style
 
-一个 Claude Code 插件。你每次提交问题后、模型开始回答前，它会把一份约 500 字的 `STYLE.md` 风格规则附加到你的输入里。效果是：Claude 评审方案、比较选项、写周报和文档时，先说结论，再给依据，不用比喻、反转句和金句代替说明。
+一个 Claude Code 插件。Codex 用户可以手动配置，见「在 Codex 中使用」。你每次提交问题后、模型开始回答前，它会把一份约 500 字的 `STYLE.md` 风格规则附加到你的输入里。效果是：Claude 评审方案、比较选项、写周报和文档时，先说结论，再给依据，不用比喻、反转句和金句代替说明。
 
 它不适合写文案、科普这类需要吸引力的文字，原因见下方「适用范围」。
 
@@ -94,7 +94,7 @@ claude plugin disable plain-style@claude-plain-style --scope project
 1. 项目根目录有 `STYLE.md`，就用这份。
 2. 没有，就用插件自带的默认规则。
 
-这里的项目根目录是你启动 Claude Code 时所在的目录。子目录里的 `STYLE.md` 不会被读取。文件名必须是大写的 `STYLE.md`。
+这里的项目根目录是你启动 Claude Code 或 Codex 时所在的目录。子目录里的 `STYLE.md` 不会被读取。文件名必须是大写的 `STYLE.md`。
 
 ### 更新和卸载
 
@@ -103,6 +103,85 @@ claude plugin marketplace update claude-plain-style   # 拉取本仓库的最新
 claude plugin update plain-style@claude-plain-style   # 更新插件，重启后生效
 claude plugin uninstall plain-style@claude-plain-style
 ```
+
+## 在 Codex 中使用
+
+Codex CLI 不需要安装插件，在 hook 配置里加一段即可。下面两种写法选一种。
+
+先确认 `~/.codex/config.toml` 里打开了 hooks 功能：
+
+```toml
+[features]
+hooks = true
+```
+
+### 对所有项目生效
+
+1. 下载规则文件：
+
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/xiaozhenliu/claude-plain-style/main/plugins/plain-style/STYLE.md -o ~/.codex/STYLE.md
+   ```
+
+2. 在 `~/.codex/hooks.json` 里加入下面的配置。文件已经存在时，把 `UserPromptSubmit` 这一项合并进原有的 `hooks` 里：
+
+   ```json
+   {
+     "hooks": {
+       "UserPromptSubmit": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "f=STYLE.md; [ -f \"$f\" ] || f=\"${CODEX_HOME:-$HOME/.codex}/STYLE.md\"; jq -Rs '{hookSpecificOutput:{hookEventName:\"UserPromptSubmit\",additionalContext:.},suppressOutput:true}' \"$f\"",
+               "timeout": 5
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+
+这段命令先找启动 Codex 的目录里有没有 `STYLE.md`，有就用这份，没有就用 `~/.codex/STYLE.md`。所以给某个项目换规则，同样是在项目根目录放一份 `STYLE.md`。
+
+### 只对一个项目生效
+
+把 `STYLE.md` 复制到项目根目录，再在项目里新建 `.codex/hooks.json`：
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -Rs '{hookSpecificOutput:{hookEventName:\"UserPromptSubmit\",additionalContext:.},suppressOutput:true}' STYLE.md",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Codex 从你启动它的目录运行 hook，所以这里直接写 `STYLE.md`。
+
+两种写法都需要系统装有 `jq`（macOS：`brew install jq`）。不要同时使用两种写法，否则规则会注入两次。
+
+### 在 Codex 中没有效果
+
+按顺序检查：
+
+1. `~/.codex/config.toml` 的 `[features]` 下是否有 `hooks = true`。
+2. 第一次运行时，Codex 会要求确认是否信任这个 hook，是否已经确认。
+3. 系统里是否装有 `jq`。
+
+## 在 ChatGPT 中使用
+
+ChatGPT 网页版和 App 不支持 hook，不能在每次提问时自动附加规则。可以把 [`STYLE.md`](plugins/plain-style/STYLE.md) 的全文粘贴到 ChatGPT 设置里的自定义指令（Custom Instructions），或者某个 Project 的指令里。效果和写进 `CLAUDE.md` 相同：规则在对话开始时生效一次，不会每轮重新附加。
 
 ## 改成你自己的规则
 

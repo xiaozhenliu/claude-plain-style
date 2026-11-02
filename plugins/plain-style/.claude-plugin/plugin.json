@@ -1,6 +1,6 @@
 {
   "name": "plain-style",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "每次提问前自动把 STYLE.md 输出风格规则注入 Claude Code，让周报、说明、文档这类写给人看的文字只讲事实，不编细节、不用修辞。",
   "author": {
     "name": "xiaozhenliu"
