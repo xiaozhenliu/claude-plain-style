@@ -29,7 +29,7 @@ claude plugin install plain-style@claude-plain-style
 | 参数 | 生效范围 | 配置写入位置 |
 |---|---|---|
 | `--scope user`（默认） | 你的所有项目 | `~/.claude/settings.json` |
-| `--scope project` | 当前项目，配置随仓库提交，团队成员共用 | `.claude/settings.json` |
+| `--scope project` | 当前项目，配置可随仓库提交；团队成员需先执行第一条命令添加来源 | `.claude/settings.json` |
 | `--scope local` | 当前项目，只对你自己生效，不提交 | `.claude/settings.local.json` |
 
 安装后重启 Claude Code 会话。插件运行需要系统装有 `jq` 或 `python3` 二者之一，macOS 和大多数 Linux 默认带 `python3`。
