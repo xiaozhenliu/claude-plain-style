@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}\"/hooks/inject.sh",
+            "timeout": 5,
+            "statusMessage": "注入 STYLE.md 输出风格约束"
+          }
+        ]
+      }
+    ]
+  }
+}
