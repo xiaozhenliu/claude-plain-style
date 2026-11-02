@@ -1,10 +1,12 @@
 # claude-plain-style
 
-一个 Claude Code 插件。Codex 用户可以手动配置，见「在 Codex 中使用」。你每次提交问题后、模型开始回答前，它会把一份约 500 字的 `STYLE.md` 风格规则附加到你的输入里。效果是：Claude 评审方案、比较选项、写周报和文档时，先说结论，再给依据，不用比喻、反转句和金句代替说明。
+一个 Claude Code 插件。你每次提交问题后、模型开始回答前，它会把一份约 500 字的 `STYLE.md` 风格规则附加到你的输入里。效果是：Claude 评审方案、比较选项、写周报和文档时，先说结论，再给依据，不用比喻、反转句和金句代替说明。Codex 用户可以手动配置，见「在 Codex 中使用」。
 
 它不适合写文案、科普这类需要吸引力的文字，原因见下方「适用范围」。
 
 规则全文见 [`plugins/plain-style/STYLE.md`](plugins/plain-style/STYLE.md)。
+
+当前版本：0.1.1。各版本的改动见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 ## 安装
 
